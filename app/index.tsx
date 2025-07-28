@@ -2,19 +2,52 @@ import * as Location from 'expo-location';
 import { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 
+const getGoogleMapGeocode = async (latitude: number, longitude: number) => {
+  const apiKey = process.env.EXPO_PUBLIC_API_KEY;
+  try {
+    const response = await fetch(
+    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
+    );
+  const data = await response.json();
+  console.log(data);
+  
+  return data;
+} catch (error) {
+  console.error("구글 맵 API 호출 실패: " + error);
+  return null;
+}
+}
+
 const {width: SCREEN_WIDTH} = Dimensions.get("window");
 
 export default function Index() {
   const [ok, setOk ] = useState<boolean>(false);
   const[errorMsg, setErrorMsg] = useState<string>("");
-    
+  const[city, setCity] = useState<string | null>(""); 
+  
   const locationData = async () => {
     const {granted} = await Location.requestForegroundPermissionsAsync();
 
     if(!granted) {
       setOk(false);
       setErrorMsg("위치에 대한 권한 부여가 거부되었습니다.");
+      return;
     }
+
+    const location = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = location.coords;
+    console.log(latitude, longitude);
+
+    const address = await getGoogleMapGeocode(latitude, longitude);
+    console.log(address);
+    console.log(address.results[4].formatted_address);
+
+    const cityAddress = address.results[4].formatted_address;
+    const citySplit = cityAddress.split(" ");
+    console.log(citySplit);
+
+    const city = `${citySplit[1]} ${citySplit[2]}`
+    setCity(city);
 
     return;
   };
@@ -28,7 +61,7 @@ export default function Index() {
     <StatusBar backgroundColor="skyblue" barStyle="dark-content" />
     <View style={[styles.container]}>
       <View style={styles.cityWrap}>
-        <Text style={styles.cityName}>Seoul</Text>
+        <Text style={styles.cityName}>{city}</Text>
       </View>
       <ScrollView horizontal pagingEnabled contentContainerStyle={styles.mainContentView}>
         <View style={styles.mainWrap}>
@@ -37,12 +70,8 @@ export default function Index() {
             <Text style={styles.weather}>맑음</Text>
         </View>
         <View style={styles.body}> 
-          <Text style={styles.temp}>
-            35
-          </Text>
-          <Text style={styles.tempUnit}>
-            °
-          </Text>
+          <Text style={styles.temp}> 35 </Text>
+          <Text style={styles.tempUnit}> ° </Text>
         </View>
         <View style={styles.footer}> </View>
       </View>
