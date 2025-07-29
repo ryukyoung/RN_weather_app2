@@ -41,6 +41,7 @@
     },
     "extra": {
       "EXPO_PUBLIC_API_KEY": "${process.env.EXPO_PUBLIC_API_KEY}",
+      "EXPO_PUBLIC_WEATHER_API_KEY": "${process.env.EXPO_PUBLIC_WEATHER_API_KEY}",
       "router": {},
       "eas": {
         "projectId": "7742ec7a-1822-429a-b48f-3fc6a17cd94d"
