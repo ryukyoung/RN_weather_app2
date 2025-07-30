@@ -42,6 +42,41 @@ const convertDate = (timestamp: number) => {
   return formattedDate;
 };
 
+const formatMonthDate = (timestamp: number) => {
+  const date = new Date(timestamp * 1000);
+  // 한국 시간대로 포맷팅
+  const formattedDate = date.toLocaleDateString("ko-KR", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const parts = formattedDate.split(". ");
+  console.log(parts);
+
+  const monthsDate: { [key: string]: string } = {
+    "01": "Jan",
+    "02": "Feb",
+    "03": "Mar",
+    "04": "Apr",
+    "05": "May",
+    "06": "Jun",
+    "07": "Jul",
+    "08": "Aug",
+    "09": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec",
+  };
+  const monthKey = parts[1];
+  const monthName = monthsDate[monthKey];
+  const day = parts[2];
+
+  return `${day} ${monthName}`;
+};
+
 const RenderWeeklyItem = ({ item }: { item: any }) => {
   console.log(item.temp);
   return (
@@ -53,6 +88,7 @@ const RenderWeeklyItem = ({ item }: { item: any }) => {
         }}
         style={styles.weatherIcon2}
       />
+      <Text style={styles.weeklyRegDate}>{formatMonthDate(item.dt)}</Text>
     </View>
   );
 };
@@ -208,11 +244,11 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   dailyContainer: {
-    flex: 0.75,
+    flex: 0.73,
     backgroundColor: "skyblue",
   },
   weeklyContainer: {
-    flex: 0.25,
+    flex: 0.27,
     backgroundColor: "skyblue",
   },
   container: {
@@ -222,8 +258,6 @@ const styles = StyleSheet.create({
   mainContentView: {},
   mainWrap: {
     backgroundColor: "skyblue",
-    borderWidth: 3,
-    borderColor: "red",
     width: SCREEN_WIDTH,
     position: "relative",
   },
@@ -231,9 +265,9 @@ const styles = StyleSheet.create({
     flex: 0.1,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 3,
   },
   cityName: {
+    marginTop: 15,
     fontSize: 28,
     fontWeight: "bold",
   },
@@ -265,7 +299,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    right: 100,
+    right: 120,
     top: 34,
   },
   weatherIcon: {
@@ -275,13 +309,9 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1.9,
-    borderColor: "green",
-    borderWidth: 3,
   },
   tempWrap: {
     flex: 0.37,
-    borderWidth: 3,
-    borderColor: "red",
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -290,27 +320,25 @@ const styles = StyleSheet.create({
     fontSize: 150,
     fontWeight: "bold",
     position: "absolute",
-    top: -30,
-    left: 68,
+    top: -15,
+    left: 75,
   },
   tempUnit: {
     fontSize: 130,
     position: "absolute",
-    top: -33,
-    right: 12,
+    top: -25,
+    right: 25,
   },
   summaryWrap: {
     flex: 0.21,
-    backgroundColor: "skyblue",
-    borderWidth: 3,
-    borderColor: "red",
-    paddingTop: 15,
-    paddingLeft: 30,
-    paddingRight: 30,
-    paddingBottom: 10,
+    paddingTop: 25,
+    paddingLeft: 40,
+    paddingRight: 40,
+    paddingBottom: 20,
   },
   dailySummaryTitle: {
     fontSize: 17,
+    marginTop: 15,
     fontWeight: "bold",
   },
   summaryText: {
@@ -318,10 +346,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   subInfoWrap: {
-    flex: 0.42,
-    backgroundColor: "skyblue",
+    flex: 0.4,
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 5,
+    marginBottom: -10,
   },
   subInfoInner: {
     backgroundColor: "black",
@@ -348,22 +377,20 @@ const styles = StyleSheet.create({
   },
   footer: {
     flex: 0.9,
-    borderWidth: 3,
-    borderColor: "red",
   },
   footerTitle: {
     fontSize: 17,
     fontWeight: "bold",
-    paddingTop: 15,
+    paddingTop: 5,
     paddingLeft: 30,
     paddingRight: 30,
-    paddingBottom: 0,
   },
   footerContent: {
     flex: 1,
     flexDirection: "row",
     columnGap: 10,
     alignItems: "center",
+    marginTop: -20,
     paddingRight: 35,
     paddingLeft: 35,
   },
@@ -371,17 +398,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 70,
     height: 100,
-    backgroundColor: "black",
+    borderWidth: 3,
+    borderColor: "black",
     alignItems: "center",
     justifyContent: "center",
   },
   footerItemText: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "white",
+    color: "black",
   },
   weatherIcon2: {
     width: 50,
     height: 50,
+  },
+  weeklyRegDate: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "black",
   },
 });
